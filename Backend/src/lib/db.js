@@ -2,6 +2,9 @@ import mongoose from "mongoose"
 import {env} from "./env.js"
 export const connectDB=async()=>{
     try {
+if(!env.DB_URL){    
+    throw new Error("❌Database URL is not set in environment variables")
+}   
         const conn =await mongoose.connect(env.DB_URL)
         console.log("✅Connected to MongoDB successfully")
     } catch (error) {
