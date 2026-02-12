@@ -2,10 +2,11 @@ import express from 'express';
 import {env} from './lib/env.js';
 import path from "path"
 import {connectDB} from './lib/db.js';  
+import { fileURLToPath } from "url";
 const app=express();
 
-const __dirname=path.resolve();
-
+const __filename=fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__filename);
 app.get('/health',(req,res)=>{
     res.status(200).json({msg:"hello world"})
 })
