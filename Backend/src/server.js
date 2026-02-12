@@ -40,11 +40,12 @@ app.get("/{*any}",(req,res)=>{
 const startserver=async()=>{
     try {
         await connectDB();
-         app.listen(procces.env.PORT,()=>{
-        console.log(`✅Server is running on port ${env.PORT}`)
+        const Port=process.env.PORT || 3000;
+         app.listen(Port,()=>{
+        console.log(`✅Server is running on port ${Port}`)
     })
     } catch (error) {
-        console.log("❌ Error starting server",errorMonitor);
+        console.log("❌ Error starting server",error);
     }
  
 };
