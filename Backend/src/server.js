@@ -1,68 +1,25 @@
-import express from "express";
-import { env } from "./lib/env.js";
-import path from "path";
-import { connectDB } from "./lib/db.js";
-import { fileURLToPath } from "url";
+import express from 'express';
+import {env} from './lib/env.js';
+import path from "path"
+const app=express();
 
-const app = express();
+const __dirname=path.resolve();
 
-// Needed for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.get('/health',(req,res)=>{
+    res.status(200).json({msg:"hello world"})
+})
 
-// ======================
-// MIDDLEWARE
-// ======================
-app.use(express.json());
 
-// ======================
-// TEST ROUTES
-// ======================
-app.get("/health", (req, res) => {
-  res.status(200).json({ msg: "hello world" });
-});
+app.get('/books',(req,res)=>{
+    res.status(200).json({msg:"this is thw books endpoint"})
+})
 
-app.get("/books", (req, res) => {
-  res.status(200).json({ msg: "this is the books endpoint" });
-});
 
-// ======================
-// PRODUCTION FRONTEND SERVING
-// ======================
-if (process.env.NODE_ENV === "production") {
+if(env.NODE_ENV==="production"){
+app.use(express.static(path.join(__dirname,"../Frontend/dist")));
 
-  // Railway runs from /app/Backend
-  // So we go one level up to reach /app/Frontend/dist
-  const frontendPath = path.join(process.cwd(), "..", "Frontend", "dist");
-
-  console.log("Serving frontend from:", frontendPath);
-
-  // Serve static files
-  app.use(express.static(frontendPath));
-
-  // React Router fallback (Express 5 compatible)
-  app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-  });
+app.get("/{*any}",(req,res)=>{
+    res.sendFile(path.join(__dirname,"..Frontend","dist","index.html"));
+})
 }
-
-// ======================
-// START SERVER
-// ======================
-const startServer = async () => {
-  try {
-    await connectDB();
-
-    const PORT = process.env.PORT || env.PORT || 3000;
-
-    app.listen(PORT, () => {
-      console.log(`✅ Server is running on port ${PORT}`);
-    });
-
-  } catch (error) {
-    console.error("❌ Error starting server:", error);
-    process.exit(1);
-  }
-};
-
-startServer();
+app.listen(env.PORT,()=>console.log(`Server started at ${env.PORT}`));
