@@ -31,7 +31,7 @@ app.get('/books',(req,res)=>{
 
 
 if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "Frontend", "dist");
+  const frontendPath = path.join(process.cwd(), "Frontend", "dist");
 
   app.use(express.static(frontendPath));
 
@@ -39,6 +39,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+
 
 const startserver=async()=>{
     try {
