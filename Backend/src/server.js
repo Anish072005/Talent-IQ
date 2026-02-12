@@ -2,15 +2,15 @@ import express from 'express';
 import {env} from './lib/env.js';
 import path from "path"
 import {connectDB} from './lib/db.js';
-import { errorMonitor } from 'events';
+import { fileURLToPath } from 'url';
 import cors from "cors";
 import {serve} from "inngest/express";
 import { inngest,functions } from './lib/inngest.js';
 
 
 const app=express();
-
-const __dirname=path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //middleware
 app.use(express.json());
@@ -30,13 +30,16 @@ app.get('/books',(req,res)=>{
 })
 
 
-if(env.NODE_ENV==="production"){
-app.use(express.static(path.join(__dirname,"../../Frontend/dist")));
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = path.join(__dirname, "Frontend", "dist");
 
-app.get("/{*any}",(req,res)=>{
-    res.sendFile(path.join(__dirname,"../../Frontend/dist/index.html"));
-})
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
 }
+
 const startserver=async()=>{
     try {
         await connectDB();
