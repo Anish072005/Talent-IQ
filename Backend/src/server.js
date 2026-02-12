@@ -1,38 +1,46 @@
 import express from 'express';
-import {env} from './lib/env.js';
-import path from "path"
-import {connectDB} from './lib/db.js';  
+import { env } from './lib/env.js';
+import path from "path";
+import { connectDB } from './lib/db.js';  
 import { fileURLToPath } from "url";
-const app=express();
 
-const __filename=fileURLToPath(import.meta.url);
-const __dirname=path.dirname(__filename);
-app.get('/health',(req,res)=>{
-    res.status(200).json({msg:"hello world"})
-})
+const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.get('/books',(req,res)=>{
-    res.status(200).json({msg:"this is thw books endpoint"})
-})
+// Test routes
+app.get('/health', (req, res) => {
+    res.status(200).json({ msg: "hello world" });
+});
 
+app.get('/books', (req, res) => {
+    res.status(200).json({ msg: "this is the books endpoint" });
+});
 
-if(env.NODE_ENV==="production"){
-app.use(express.static(path.join(__dirname,"../../Frontend/dist")));
+// ✅ PRODUCTION FRONTEND SERVING (FIXED)
+if (env.NODE_ENV === "production") {
 
-app.get("/{*any}",(req,res)=>{
-    res.sendFile(path.join(__dirname,"../..Frontend","dist","index.html"));
-})
+    const frontendPath = path.join(process.cwd(), "Frontend", "dist");
+
+    app.use(express.static(frontendPath));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(frontendPath, "index.html"));
+    });
 }
-const startServer=async()=>{
-try {
-    await connectDB();
-    app.listen(env.PORT,()=>{
-        console.log(`✅Server is running on port ${env.PORT}`)
-    })
-} catch (error) {
-    console.error("❌Error starting server:", error)    
-}
+
+const startServer = async () => {
+    try {
+        await connectDB();
+
+        app.listen(env.PORT, () => {
+            console.log(`✅ Server is running on port ${env.PORT}`);
+        });
+
+    } catch (error) {
+        console.error("❌ Error starting server:", error);
+    }
 };
 
 startServer();
