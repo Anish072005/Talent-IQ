@@ -19,15 +19,14 @@ app.get('/books', (req, res) => {
 });
 
 // ✅ PRODUCTION FRONTEND SERVING (FIXED)
-if (env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = path.join(process.cwd(), "Frontend", "dist");
 
-    const frontendPath = path.join(process.cwd(), "Frontend", "dist");
+  app.use(express.static(frontendPath));
 
-    app.use(express.static(frontendPath));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(frontendPath, "index.html"));
-    });
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
 }
 
 const startServer = async () => {
