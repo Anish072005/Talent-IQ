@@ -40,7 +40,7 @@ app.get("/{*any}",(req,res)=>{
 const startserver=async()=>{
     try {
         await connectDB();
-         app.listen(process.env.PORT,()=>{
+         app.listen(procces.env.PORT,()=>{
         console.log(`✅Server is running on port ${env.PORT}`)
     })
     } catch (error) {
