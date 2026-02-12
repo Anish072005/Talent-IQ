@@ -20,6 +20,7 @@ app.get('/books', (req, res) => {
 
 // ✅ PRODUCTION FRONTEND SERVING (FIXED)
 if (process.env.NODE_ENV === "production") {
+
   const frontendPath = path.join(process.cwd(), "Frontend", "dist");
 
   app.use(express.static(frontendPath));
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+
 
 const startServer = async () => {
     try {
