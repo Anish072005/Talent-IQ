@@ -31,14 +31,21 @@ app.get('/books',(req,res)=>{
 
 
 if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.join(process.cwd(), "Frontend", "dist");
+  const frontendPath = path.resolve("Frontend", "dist");
+
+  console.log("Frontend path:", frontendPath);
 
   app.use(express.static(frontendPath));
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+
+  app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+
 
 
 const startserver=async()=>{
