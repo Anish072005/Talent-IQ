@@ -25,14 +25,14 @@ app.get('/books',(req,res)=>{
     res.status(200).json({msg:"this is thw books endpoint"})
 })
 
-
 if (env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../../Frontend/dist")));
+  app.use(express.static(path.join(__dirname, "../dist")));
 
-  app.get("/{*any}", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../Frontend", "dist", "index.html"));
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist/index.html"));
   });
 }
+
 const startServer = async () => {
   try {
     await connectDB();
