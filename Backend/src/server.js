@@ -7,7 +7,9 @@ import cors from "cors";
 import {serve} from "inngest/express";
 import { inngest,functions } from './lib/inngest.js';
 const app=express();
-const __dirname = path.resolve();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 //middleware
 app.use(express.json());
 //credentials:true means that the server will allows browser to include  cookies on request.
@@ -24,12 +26,13 @@ app.get('/health',(req,res)=>{
 app.get('/books',(req,res)=>{
     res.status(200).json({msg:"this is thw books endpoint"})
 })
+const distPath = path.join(__dirname, "../../Backend/dist");
 
 if (env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../dist")));
+  app.use(express.static(distPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist/index.html"));
+    res.sendFile(path.join(distPath, "index.html"));
   });
 }
 
