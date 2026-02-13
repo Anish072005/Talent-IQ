@@ -6,12 +6,8 @@ import { fileURLToPath } from 'url';
 import cors from "cors";
 import {serve} from "inngest/express";
 import { inngest,functions } from './lib/inngest.js';
-
-
 const app=express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const __dirname = path.resolve();
 //middleware
 app.use(express.json());
 //credentials:true means that the server will allows browser to include  cookies on request.
@@ -30,34 +26,19 @@ app.get('/books',(req,res)=>{
 })
 
 
-if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.resolve("Frontend", "dist");
+if (env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-  console.log("Frontend path:", frontendPath);
-
-  app.use(express.static(frontendPath));
-
-  app.get("/", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-  });
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
+  app.get("/{*any}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
-
-
-
-const startserver=async()=>{
-    try {
-        await connectDB();
-        const Port=process.env.PORT || 3000;
-         app.listen(Port,()=>{
-        console.log(`✅Server is running on port ${Port}`)
-    })
-    } catch (error) {
-        console.log("❌ Error starting server",error);
-    }
- 
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(env.PORT, () => console.log("Server is running on port:", env.PORT));
+  } catch (error) {
+    console.error("💥 Error starting the server", error);
+  }
 };
-startserver();
+startServer();
