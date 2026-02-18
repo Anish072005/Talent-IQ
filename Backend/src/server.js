@@ -8,7 +8,7 @@ import {serve} from "inngest/express";
 import { inngest,functions } from './lib/inngest.js';
 import { clerkClient, clerkMiddleware } from '@clerk/express'
 import {protectRoute} from './middleware/protectRoute.js';
-
+import chatRoutes from './routes/chatRoutes.js';
 const app=express();
 
 
@@ -23,17 +23,16 @@ app.use(clerkMiddleware()) // Add Clerk middleware to parse authentication infor
 
 app.use("/api/inngest",serve({client:inngest,functions}))
 
+app.use("/api/chat",chatRoutes)
+
+
 app.get('/health',(req,res)=>{
-
     res.status(200).json({msg:"hello world"})
-})
-
-app.get('/vedio-calls',protectRoute,(req,res)=>{
-  
-    res.status(200).json({msg:"this is a ProctedRoute"})
 })
 const distPath = path.join(__dirname, "../../Backend/dist");
 
+
+//make our app ready for production
 if (env.NODE_ENV === "production") {
   app.use(express.static(distPath));
 
