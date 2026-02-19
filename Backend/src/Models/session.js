@@ -1,5 +1,5 @@
-import moongose from "mongoose";
-const sessionSchema = new moongose.Schema(
+import mongoose from "mongoose";
+const sessionSchema = new mongoose.Schema(
   {
     problem: {
       type: String,
@@ -11,12 +11,12 @@ const sessionSchema = new moongose.Schema(
       enum: ["easy", "medium", "hard"],
     },
     host: {
-      type: moongose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     participant: {
-      type: moongose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
@@ -33,6 +33,6 @@ const sessionSchema = new moongose.Schema(
   { timestamps: true },
 );
 
-const session = moongose.model("Session", sessionSchema);
+const session = mongoose.model("Session", sessionSchema);
 
 export default session;

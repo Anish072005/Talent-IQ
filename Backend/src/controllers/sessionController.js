@@ -1,4 +1,4 @@
-import Session from "../Models/Session.js";
+import Session from "../models/session.js";
 import { Chatclient, streamClient } from "../lib/stream.js";
 export async function createSession(req, res) {
   try {
@@ -20,20 +20,20 @@ export async function createSession(req, res) {
       host: userId,
       callId,
     });
-    //create a stream vedio call
+    //create a stream video call
 
-    await streamClient.vedio.call("default", callId).getOrCreate({
+    await streamClient.video.call("default", callId).getOrCreate({
       data: {
         created_by_id: clerkId,
         custom: { problem, difficulty, sessionId: session._id.toString() },
       },
     });
-    const channnel = chatClient.channel("messaging", callId, {
+    const channel = Chatclient.channel("messaging", callId, {
       name: `${problem} Session`,
       created_by_id: clerkId,
       members: [clerkId],
     });
-    await channnel.create();
+    await channel.create();
 
     res
       .status(201)
@@ -142,9 +142,9 @@ export async function endSession(req, res) {
     }
     session.status = "completed";
     await session.save();
-    //delete stream vedio call
+    //delete stream video call
 
-    const call = streamClient.vedio.call("default", session.callId);
+    const call = streamClient.video.call("default", session.callId);
     await call.delete({ hard: true });
 
     //delete stream chat channel
