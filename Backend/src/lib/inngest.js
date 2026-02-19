@@ -23,11 +23,15 @@ async ({ event }) => {
   await upsertStreamUser({
 id:newUser.clerkId.toString(),
 name:newUser.name,
-image:newUser.profileImage,
+image:newUser.profileImage, 
   });  
-  return { success: true };
+//send a welcome email here later
+
+
+
+
 }
-)
+);
 
 const deletedUser= inngest.createFunction(
 {id:"deleted-user-from-DB"}, 
