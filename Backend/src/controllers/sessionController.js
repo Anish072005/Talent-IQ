@@ -59,7 +59,6 @@ export async function getActiveSessions(_, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
-
 export async function getMyRecentSessions(req, res) {
   try {
     //where user is either host or participant and session is completed
@@ -94,6 +93,7 @@ export async function getSessionsById(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
 export async function joinSession(req, res) {
   try {
     const { id } = req.params;
@@ -104,6 +104,16 @@ export async function joinSession(req, res) {
 
     if (!session) return res.status(404).json({ message: "Session not found" });
 
+
+    if(session.status!=="active"){
+        return res.status(400).json({message:"cannot join completed session"});
+
+    }
+
+if(session.host.toString()==userId.toString()){
+    return res.status(400).json({message:"Host cannot join thier own session as participant"});
+}
+//check if session is already full -has a participant
     if (session.participant)
       return res.status(404).json({ message: "session is full" });
 
@@ -120,28 +130,26 @@ export async function joinSession(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
 export async function endSession(req, res) {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     const userId = req.user._id;
     const session = await Session.findById(id);
 
     if (!session) return res.status(404).json({ message: "Session not Found" });
 
     //check if user is the host
-
     if (session.host.toString() != userId.toString()) {
       return res
         .status(403)
         .json({ message: "Only the host can end the session" });
     }
     //check if session is Already completed
-
     if (session.status == "completed") {
       return res.status(400).json({ message: "Session is already completed" });
     }
-    session.status = "completed";
-    await session.save();
+
     //delete stream video call
 
     const call = streamClient.video.call("default", session.callId);
@@ -151,6 +159,11 @@ export async function endSession(req, res) {
 
     const channel = Chatclient.channel("messaging", session.callId);
     await channel.delete();
+    
+    
+    
+    session.status = "completed";
+    await session.save();
 
     res.status(200).json({ message: "Session ended Succesfuly" });
   } catch (error) {
@@ -158,3 +171,4 @@ export async function endSession(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+ 
