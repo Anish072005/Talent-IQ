@@ -1,6 +1,6 @@
 import {requireAuth} from '@clerk/express'
 
-import User from '../Models/User.js';
+import User from '../models/User.js';
 export const protectRoute=[
     requireAuth(), // This middleware will ensure that the user is authenticated
     async(req,res,next)=>{
