@@ -29,8 +29,7 @@ app.use("/api/sessions",sessionRoutes)
 app.get('/health',(req,res)=>{
     res.status(200).json({msg:"hello world"})
 })
-const distPath = path.join(__dirname, "../../Backend/dist");
-
+const distPath = path.join(__dirname, "dist");
 
 //make our app ready for production
 if (env.NODE_ENV === "production") {
