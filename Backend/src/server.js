@@ -29,7 +29,7 @@ app.use("/api/sessions",sessionRoutes)
 app.get('/health',(req,res)=>{
     res.status(200).json({msg:"hello world"})
 })
-const distPath = path.join(__dirname, "dist");
+const distPath = path.join(__dirname, "../dist");
 
 app.use(express.static(distPath));
 
