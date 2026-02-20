@@ -31,14 +31,11 @@ app.get('/health',(req,res)=>{
 })
 const distPath = path.join(__dirname, "dist");
 
-//make our app ready for production
-if (env.NODE_ENV === "production") {
-  app.use(express.static(distPath));
+app.use(express.static(distPath));
 
-  app.get("/{*any}", (req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
-  });
-}
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 const startServer = async () => {
   try {
